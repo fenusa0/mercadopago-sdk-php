@@ -3,13 +3,13 @@
 /**
  * MercadoPago Integration Library
  * Access MercadoPago for payments integration
- * 
+ *
  * @author hcasatti
+ * @author @fenusa0
  *
  */
-$GLOBALS["LIB_LOCATION"] = dirname(__FILE__);
 
-class MP {
+class Mercadopago_MP {
 
     const version = "0.2.1";
 
@@ -41,7 +41,7 @@ class MP {
             'grant_type' => 'client_credentials'
                 ));
 
-        $access_data = MPRestClient::post("/oauth/token", $app_client_values, "application/x-www-form-urlencoded");
+        $access_data = Mercadopago_MPRestClient::post("/oauth/token", $app_client_values, "application/x-www-form-urlencoded");
 
         $this->access_data = $access_data['response'];
 
@@ -57,8 +57,8 @@ class MP {
         $access_token = $this->get_access_token();
 
         $uri_prefix = $this->sandbox ? "/sandbox" : "";
-            
-        $payment_info = MPRestClient::get($uri_prefix."/collections/notifications/" . $id . "?access_token=" . $access_token);
+
+        $payment_info = Mercadopago_MPRestClient::get($uri_prefix."/collections/notifications/" . $id . "?access_token=" . $access_token);
         return $payment_info;
     }
     public function get_payment_info($id) {
@@ -69,11 +69,11 @@ class MP {
      * Get information for specific authorized payment
      * @param id
      * @return array(json)
-    */    
+    */
     public function get_authorized_payment($id) {
         $access_token = $this->get_access_token();
 
-        $authorized_payment_info = MPRestClient::get("/authorized_payments/" . $id . "?access_token=" . $access_token);
+        $authorized_payment_info = Mercadopago_MPRestClient::get("/authorized_payments/" . $id . "?access_token=" . $access_token);
         return $authorized_payment_info;
     }
 
@@ -89,7 +89,7 @@ class MP {
             "status" => "refunded"
         );
 
-        $response = MPRestClient::put("/collections/" . $id . "?access_token=" . $access_token, $refund_status);
+        $response = Mercadopago_MPRestClient::put("/collections/" . $id . "?access_token=" . $access_token, $refund_status);
         return $response;
     }
 
@@ -105,7 +105,7 @@ class MP {
             "status" => "cancelled"
         );
 
-        $response = MPRestClient::put("/collections/" . $id . "?access_token=" . $access_token, $cancel_status);
+        $response = Mercadopago_MPRestClient::put("/collections/" . $id . "?access_token=" . $access_token, $cancel_status);
         return $response;
     }
 
@@ -121,7 +121,7 @@ class MP {
             "status" => "cancelled"
         );
 
-        $response = MPRestClient::put("/preapproval/" . $id . "?access_token=" . $access_token, $cancel_status);
+        $response = Mercadopago_MPRestClient::put("/preapproval/" . $id . "?access_token=" . $access_token, $cancel_status);
         return $response;
     }
 
@@ -141,8 +141,8 @@ class MP {
         $filters = $this->build_query($filters);
 
         $uri_prefix = $this->sandbox ? "/sandbox" : "";
-            
-        $collection_result = MPRestClient::get($uri_prefix."/collections/search?" . $filters . "&access_token=" . $access_token);
+
+        $collection_result = Mercadopago_MPRestClient::get($uri_prefix."/collections/search?" . $filters . "&access_token=" . $access_token);
         return $collection_result;
     }
 
@@ -154,7 +154,7 @@ class MP {
     public function create_preference($preference) {
         $access_token = $this->get_access_token();
 
-        $preference_result = MPRestClient::post("/checkout/preferences?access_token=" . $access_token, $preference);
+        $preference_result = Mercadopago_MPRestClient::post("/checkout/preferences?access_token=" . $access_token, $preference);
         return $preference_result;
     }
 
@@ -167,7 +167,7 @@ class MP {
     public function update_preference($id, $preference) {
         $access_token = $this->get_access_token();
 
-        $preference_result = MPRestClient::put("/checkout/preferences/{$id}?access_token=" . $access_token, $preference);
+        $preference_result = Mercadopago_MPRestClient::put("/checkout/preferences/{$id}?access_token=" . $access_token, $preference);
         return $preference_result;
     }
 
@@ -179,7 +179,7 @@ class MP {
     public function get_preference($id) {
         $access_token = $this->get_access_token();
 
-        $preference_result = MPRestClient::get("/checkout/preferences/{$id}?access_token=" . $access_token);
+        $preference_result = Mercadopago_MPRestClient::get("/checkout/preferences/{$id}?access_token=" . $access_token);
         return $preference_result;
     }
 
@@ -191,7 +191,7 @@ class MP {
     public function create_preapproval_payment($preapproval_payment) {
         $access_token = $this->get_access_token();
 
-        $preapproval_payment_result = MPRestClient::post("/preapproval?access_token=" . $access_token, $preapproval_payment);
+        $preapproval_payment_result = Mercadopago_MPRestClient::post("/preapproval?access_token=" . $access_token, $preapproval_payment);
         return $preapproval_payment_result;
     }
 
@@ -203,7 +203,7 @@ class MP {
     public function get_preapproval_payment($id) {
         $access_token = $this->get_access_token();
 
-        $preapproval_payment_result = MPRestClient::get("/preapproval/{$id}?access_token=" . $access_token);
+        $preapproval_payment_result = Mercadopago_MPRestClient::get("/preapproval/{$id}?access_token=" . $access_token);
         return $preapproval_payment_result;
     }
 
@@ -211,12 +211,12 @@ class MP {
      * Update a preapproval payment
      * @param string $preapproval_payment, $id
      * @return array(json)
-     */	
-	
+     */
+
 	public function update_preapproval_payment($id, $preapproval_payment) {
         $access_token = $this->get_access_token();
 
-        $preapproval_payment_result = MPRestClient::put("/preapproval/" . $id . "?access_token=" . $access_token, $preapproval_payment);
+        $preapproval_payment_result = Mercadopago_MPRestClient::put("/preapproval/" . $id . "?access_token=" . $access_token, $preapproval_payment);
         return $preapproval_payment_result;
     }
 
@@ -235,81 +235,3 @@ class MP {
     }
 
 }
-
-/**
- * MercadoPago cURL RestClient
- */
-class MPRestClient {
-
-    const API_BASE_URL = "https://api.mercadolibre.com";
-
-    private static function get_connect($uri, $method, $content_type) {
-        $connect = curl_init(self::API_BASE_URL . $uri);
-
-        curl_setopt($connect, CURLOPT_USERAGENT, "MercadoPago PHP SDK v" . MP::version);
-        curl_setopt($connect, CURLOPT_CAINFO, $GLOBALS["LIB_LOCATION"] . "/cacert.pem");
-        curl_setopt($connect, CURLOPT_SSLVERSION, 3);
-        curl_setopt($connect, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($connect, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($connect, CURLOPT_HTTPHEADER, array("Accept: application/json", "Content-Type: " . $content_type));
-
-        return $connect;
-    }
-
-    private static function set_data(&$connect, $data, $content_type) {
-        if ($content_type == "application/json") {
-            if (gettype($data) == "string") {
-                json_decode($data, true);
-            } else {
-                $data = json_encode($data);
-            }
-
-            if(function_exists('json_last_error')) {
-                $json_error = json_last_error();
-                if ($json_error != JSON_ERROR_NONE) {
-                    throw new Exception("JSON Error [{$json_error}] - Data: {$data}");
-                }
-            }
-        }
-
-        curl_setopt($connect, CURLOPT_POSTFIELDS, $data);
-    }
-
-    private static function exec($method, $uri, $data, $content_type) {
-        $connect = self::get_connect($uri, $method, $content_type);
-        if ($data) {
-            self::set_data($connect, $data, $content_type);
-        }
-
-        $api_result = curl_exec($connect);
-        $api_http_code = curl_getinfo($connect, CURLINFO_HTTP_CODE);
-
-        $response = array(
-            "status" => $api_http_code,
-            "response" => json_decode($api_result, true)
-        );
-
-        if ($response['status'] >= 400) {
-            throw new Exception ($response['response']['message'], $response['status']);
-        }
-
-        curl_close($connect);
-
-        return $response;
-    }
-
-    public static function get($uri, $content_type = "application/json") {
-        return self::exec("GET", $uri, null, $content_type);
-    }
-
-    public static function post($uri, $data, $content_type = "application/json") {
-        return self::exec("POST", $uri, $data, $content_type);
-    }
-
-    public static function put($uri, $data, $content_type = "application/json") {
-        return self::exec("PUT", $uri, $data, $content_type);
-    }
-
-}
-
-?>
